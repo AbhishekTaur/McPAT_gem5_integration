@@ -5,16 +5,16 @@
     <param name="number_of_cores" value="1"/>
     <param name="number_of_L1Directories" value="0"/>
     <param name="number_of_L2Directories" value="0"/>
-    <param name="number_of_L2s" value="1"/> <!-- This number means how many L2 clusters in each cluster there can be multiple banks/ports -->
+    <param name="number_of_L2s" value="0"/> <!-- This number means how many L2 clusters in each cluster there can be multiple banks/ports -->
     <param name="Private_L2" value="0"/><!--1 Private, 0 shared/coherent -->
     <param name="number_of_L3s" value="0"/> <!-- This number means how many L3 clusters -->
     <param name="number_of_NoCs" value="1"/>
     <param name="homogeneous_cores" value="1"/><!--1 means homo -->
-    <param name="homogeneous_L2s" value="1"/>
+    <param name="homogeneous_L2s" value="0"/>
     <param name="homogeneous_L1Directorys" value="1"/>
-    <param name="homogeneous_L2Directorys" value="1"/>
-    <param name="homogeneous_L3s" value="1"/>
-    <param name="homogeneous_ccs" value="1"/><!--cache coherece hardware -->
+    <param name="homogeneous_L2Directorys" value="0"/>
+    <param name="homogeneous_L3s" value="0"/>
+    <param name="homogeneous_ccs" value="0"/><!--cache coherece hardware -->
     <param name="homogeneous_NoCs" value="1"/>
     <param name="core_tech_node" value="90"/><!-- nm -->
     <param name="target_core_clockrate" value="REPLACE{1e-6/config.system.clk_domain.clock*1e12}"/><!--MHz -->
@@ -279,43 +279,43 @@
     </component>
     <!-- This block is ignored because number_of_L2Directories = 0 but it still has to be here-->
     <component id="system.L2Directory0" name="L2Directory0">
-		<param name="Directory_type" value="1"/>
-		<!--0 cam based shadowed tag. 1 directory cache -->	
-		<param name="Dir_config" value="1048576,16,16,1,2, 100"/>
-		<!-- the parameters are capacity,block_width, associativity,bank, throughput w.r.t. core clock, latency w.r.t. core clock,-->
-		<param name="buffer_sizes" value="8, 8, 8, 8"/>	
-		<!-- all the buffer related are optional -->
-		<param name="clockrate" value="3400"/>
-		<param name="ports" value="1,1,1"/>
-		<!-- number of r, w, and rw search ports -->
-		<param name="device_type" value="0"/>
-		<!-- although there are multiple access types, 
-		Performance simulator needs to cast them into reads or writes
-		e.g. the invalidates can be considered as writes -->
-		<stat name="read_accesses" value="58824"/>
-		<stat name="write_accesses" value="27276"/>
-		<stat name="read_misses" value="1632"/>
-		<stat name="write_misses" value="183"/>
-		<stat name="conflicts" value="100"/>
-		<stat name="duty_cycle" value="0.1"/>	
-	</component>
-	<component id="system.L20" name="L20">
-	<!-- all the buffer related are optional -->
-		<param name="L2_config" value="1048576,32, 8, 8, 8, 23, 32, 1"/> 
-		<!-- the parameters are capacity,block_width, associativity, bank, throughput w.r.t. core clock, latency w.r.t. core clock,output_width, cache policy -->
-		<param name="buffer_sizes" value="16, 16, 16, 16"/>
-		<!-- cache controller buffer sizes: miss_buffer_size(MSHR),fill_buffer_size,prefetch_buffer_size,wb_buffer_size-->	
-		<param name="clockrate" value="3400"/>
-		<param name="ports" value="1,1,1"/>
-		<!-- number of r, w, and rw ports -->
-		<param name="device_type" value="0"/>
-		<stat name="read_accesses" value="200000"/>
-		<stat name="write_accesses" value="27276"/>
-		<stat name="read_misses" value="1632"/>
-		<stat name="write_misses" value="183"/>
-		<stat name="conflicts" value="0"/>	
-		<stat name="duty_cycle" value="1.0"/>	
-	</component>
+      <param name="Directory_type" value="0"/>
+      <!--0 cam based shadowed tag. 1 directory cache -->	
+      <param name="Dir_config" value="512,4,0,1,1, 1"/>
+      <!-- the parameters are capacity,block_width, associativity,bank, throughput w.r.t. core clock, latency w.r.t. core clock,-->
+      <param name="buffer_sizes" value="16, 16, 16, 16"/>	
+      <!-- all the buffer related are optional -->
+      <param name="clockrate" value="1200"/>
+      <param name="ports" value="1,1,1"/>
+      <!-- number of r, w, and rw search ports -->
+      <param name="device_type" value="0"/>
+      <!-- altough there are multiple access types, 
+	   Performance simulator needs to cast them into reads or writes
+	   e.g. the invalidates can be considered as writes -->
+      <stat name="read_accesses" value="58824"/>
+      <stat name="write_accesses" value="27276"/>
+      <stat name="read_misses" value="1632"/>
+      <stat name="write_misses" value="183"/>
+      <stat name="conflicts" value="100"/>
+    </component>
+    <component id="system.L20" name="L20">
+      <!-- all the buffer related are optional -->
+      <param name="L2_config" value="0,0,0,1,1,0,0,1"/>
+      <!-- the parameters are capacity,block_width, associativity, bank, throughput w.r.t. core clock, latency w.r.t. core clock,output_width, cache policy -->
+      <param name="buffer_sizes" value="0,0,0,0"/>
+      <!-- cache controller buffer sizes: miss_buffer_size(MSHR),fill_buffer_size,prefetch_buffer_size,wb_buffer_size-->	
+      <param name="vdd" value="0"/><!-- 0 means using ITRS default vdd -->	     
+      <param name="clockrate" value="1e-6/( 1000 * 1e-12)}"/>
+      <param name="ports" value="1,1,1"/>
+      <!-- number of r, w, and rw ports -->
+      <param name="device_type" value="0"/>
+      <stat name="read_accesses" value="0"/>
+      <stat name="write_accesses" value="0"/>
+      <stat name="read_misses" value="0"/>
+      <stat name="write_misses" value="0"/>
+      <stat name="conflicts" value="0"/>	
+      <stat name="duty_cycle" value="1.0"/>	
+    </component>
     
     <!--**********************************************************************-->
     <!-- This block is ignored because number_of_L3s = 0 but you must have it here anyway -->

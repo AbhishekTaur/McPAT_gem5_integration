@@ -64,15 +64,6 @@ def write_config_values_parameters(values, parameters):
             f.write('\n')
 
 
-def main():
-    configs = []
-    parameters = []
-
-    configs, parameters = read_mcpat(configs=configs, parameters=parameters)
-    values = read_config_value(configs=configs)
-    write_config_values_parameters(values=values, parameters=parameters)
-
-
 def read_mcpat(configs, parameters):
     if 'mcpat-template.xml' not in os.listdir("."):
         raise ValueError("Missing mcpat-template.xml in the present directory")
@@ -89,6 +80,15 @@ def read_mcpat(configs, parameters):
                     configs.append(config[0])
 
     return configs, parameters
+
+
+def main():
+    configs = []
+    parameters = []
+
+    configs, parameters = read_mcpat(configs=configs, parameters=parameters)
+    values = read_config_value(configs=configs)
+    write_config_values_parameters(values=values, parameters=parameters)
 
 
 if __name__ == '__main__':
