@@ -1,6 +1,7 @@
 import re
 import simplejson
 import os
+from shutil import rmtree, copyfile
 
 pattern = "((config|stats)\.(\w+_*\.)+\w+:*\w*)"
 
@@ -73,13 +74,48 @@ def read_mcpat(configs, parameters):
                 line = line.strip()
                 parameter = line.split("REPLACE{")[-1].split("}")[0]
                 parameters.append(parameter)
-                if '/' in parameter:
-                    parameter = parameter.split('/')[-1]
                 match_obj = re.findall(pattern, parameter)
                 for config in match_obj:
                     configs.append(config[0])
 
     return configs, parameters
+
+
+def update_mcpat_file(params):
+    if 'tmp' in os.listdir('.'):
+        rmtree('tmp')
+    os.mkdir('tmp')
+    copyfile('mcpat-template.xml', 'tmp/mcpat-template.xml')
+    with open('tmp/mcpat-template.xml') as f:
+        file_str = f.read()
+    file_contents = file_str.split('\n')
+    i = 0
+    for j, content in enumerate(file_contents):
+        if 'REPLACE' in content:
+            replace_str = re.search('REPLACE{.*}', content).group()
+            content = content.replace(replace_str, params[i])
+            file_contents[j] = content
+            i = i + 1
+    f = open('tmp/mcpat-template.xml', 'w')
+    for content in file_contents:
+        f.write(content)
+        f.write('\n')
+
+
+def compute_parameters(values, parameters):
+    param_values = []
+    for parameter in parameters:
+        matchObj = re.findall(pattern, parameter)
+        for config in matchObj:
+            parameter = parameter.replace(config[0], str(values.get(config[0])))
+        if ',' not in parameter:
+            if isinstance(eval(parameter), float):
+                param_values.append(str(int(eval(parameter)+1)))
+            else:
+                param_values.append(str(int(eval(parameter))))
+        else:
+            param_values.append(parameter)
+    update_mcpat_file(params=param_values)
 
 
 def main():
@@ -89,6 +125,7 @@ def main():
     configs, parameters = read_mcpat(configs=configs, parameters=parameters)
     values = read_config_value(configs=configs)
     write_config_values_parameters(values=values, parameters=parameters)
+    compute_parameters(values=values, parameters=parameters)
 
 
 if __name__ == '__main__':
