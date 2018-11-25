@@ -34,6 +34,8 @@ def get_config_value(config):
 
 def read_config_value(configs):
     values = {}
+    if 'output_gem5' not in os.listdir('.'):
+        raise ValueError("Missing Output Dir: output_gem5")
     if ("stats.txt" not in os.listdir("./output_gem5")) or ("config.ini" not in os.listdir("./output_gem5")):
         raise ValueError('stats.txt or config.ini file not present')
     else:
