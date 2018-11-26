@@ -3,16 +3,27 @@ import simplejson
 import os
 from shutil import rmtree, copyfile
 
+# Pattern to recognize the parameters in mcpat file
 pattern = "((config|stats)\.(\w+_*\.)+\w+:*\w*)"
+
+# Read values from the stats file
+# Inputs:
+#   config: Input configuration whose value is required
 
 
 def get_stats_value(config):
+    value = 0
     with open('./output_gem5/stats.txt') as f:
         for line in f:
             if config.split('stats.')[-1] in line:
                 line = line.split(config.split('stats.')[-1])[-1]
                 value = re.search("\d+", line).group()
-                return int(value)
+
+    return int(value)
+
+# Read the config values from config.ini
+# Inputs:
+#   config: Input configuration whose value is required
 
 
 def get_config_value(config):
@@ -32,6 +43,11 @@ def get_config_value(config):
 
     return value
 
+# Caller method for reading from stats.txt and config.ini
+# Read the config values from config.ini
+# Inputs:
+#   configs: Input configurations
+
 
 def read_config_value(configs):
     values = {}
@@ -46,6 +62,14 @@ def read_config_value(configs):
             else:
                 values[config] = get_config_value(config=config)
     return values
+
+# Method for writing the configuration values.
+# First a check is made if there is output.txt file present.
+# Using simplejson it dumps one by one the configurations and
+# parameters to be computed.
+# Inputs:
+#   values: Input configurations
+#   parameters: parameters in template file to computed
 
 
 def write_config_values_parameters(values, parameters):
@@ -80,6 +104,10 @@ def read_mcpat(configs, parameters):
 
     return configs, parameters
 
+# Update the McPAT file with the computed values of the parameters
+# Input:
+#   params: All computed parameter values
+
 
 def update_mcpat_file(params):
     if 'tmp' in os.listdir('.'):
@@ -101,6 +129,11 @@ def update_mcpat_file(params):
         f.write(content)
         f.write('\n')
 
+# Computes the parameters values give the value of each configuration
+# Inputs:
+#   values: values of the configurations
+#   parameters: The parameters to be computed
+
 
 def compute_parameters(values, parameters):
     param_values = []
@@ -117,6 +150,8 @@ def compute_parameters(values, parameters):
             param_values.append(parameter)
     update_mcpat_file(params=param_values)
 
+# Main Method
+
 
 def main():
     configs = []
@@ -126,6 +161,8 @@ def main():
     values = read_config_value(configs=configs)
     write_config_values_parameters(values=values, parameters=parameters)
     compute_parameters(values=values, parameters=parameters)
+
+# Calls the main method
 
 
 if __name__ == '__main__':
