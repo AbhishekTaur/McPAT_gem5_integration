@@ -40,6 +40,8 @@ def get_config_value(config):
             if found:
                 if param in line:
                     value = int(line.split("=")[-1].strip())
+                    found = False
+                    break
 
     return value
 
